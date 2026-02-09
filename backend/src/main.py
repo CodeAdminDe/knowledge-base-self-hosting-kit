@@ -14,6 +14,7 @@ import os
 from datetime import datetime
 
 from src.api.v1.rag import router as rag_router
+from src.api.v1.config import router as config_router
 from src.core.chroma_manager import get_chroma_manager
 from src.core.config import get_config
 from src.services.progress_service import progress_manager
@@ -109,17 +110,18 @@ else:
 
 # Include RAG router
 app.include_router(rag_router, prefix="/api/v1/rag", tags=["RAG"])
+app.include_router(config_router, prefix="/api/v1", tags=["Config"])
 
 
 @app.get("/")
 def root():
     """Root endpoint with API information."""
     return {
-        "name": "ClawRAG",
+        "name": "Knowledge Base Self-Hosting Kit",
         "version": "1.0.0",
         "docs": "/docs",
         "health": "/health",
-        "source": "https://github.com/2dogsandanerd/ClawRag"
+        "source": "https://github.com/2dogsandanerd/Knowledge-Base-Self-Hosting-Kit"
     }
 
 

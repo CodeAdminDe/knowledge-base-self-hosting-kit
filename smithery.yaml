@@ -5,11 +5,11 @@ startCommand:
   configSchema:
     type: object
     properties:
-      CLAWRAG_API_URL:
+      KNOWLEDGE_BASE_API_URL:
         type: string
-        description: "URL of the running ClawRAG backend"
+        description: "URL of the running Knowledge Base Self-Hosting Kit backend"
         default: "http://localhost:8080"
-      CLAWRAG_TIMEOUT:
+      KNOWLEDGE_BASE_TIMEOUT:
         type: number
         description: "Timeout for API requests in milliseconds"
         default: 120000
@@ -24,10 +24,10 @@ startCommand:
   commandFunction: |
     (config) => ({
       command: 'npx',
-      args: ['-y', '@clawrag/mcp-server@latest', 'http'],
+      args: ['-y', '@knowledge-kit/mcp-server@latest', 'http'],
       env: {
-        CLAWRAG_API_URL: config.CLAWRAG_API_URL || 'http://localhost:8080',
-        CLAWRAG_TIMEOUT: config.CLAWRAG_TIMEOUT?.toString() || '120000',
+        KNOWLEDGE_BASE_API_URL: config.KNOWLEDGE_BASE_API_URL || 'http://localhost:8080',
+        KNOWLEDGE_BASE_TIMEOUT: config.KNOWLEDGE_BASE_TIMEOUT?.toString() || '120000',
         LOG_LEVEL: config.LOG_LEVEL || 'INFO',
         PORT: config.PORT?.toString() || '3000'
       }

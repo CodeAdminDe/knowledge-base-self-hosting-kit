@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClawRAG | Cognitive Core</title>
+    <title>Knowledge Base Self-Hosting Kit | Agent Memory</title>
     <style>
         * {
             margin: 0;
@@ -268,6 +268,26 @@
             color: var(--error);
         }
 
+        .code-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .code-block pre {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 0;
+        }
+
         .alert-info {
             background: rgba(102, 126, 234, 0.1);
             border: 1px solid var(--accent);
@@ -440,8 +460,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>🧠 ClawRAG</h1>
-            <p class="subtitle">Community Edition • Production-ready RAG system powered by ChromaDB & Docling</p>
+            <h1>🧠 Knowledge Base Self-Hosting Kit</h1>
+            <p class="subtitle">Community edition • Secure RAG memory powered by ChromaDB, Docling, and MCP</p>
         </header>
 
         <div class="tabs">
@@ -451,6 +471,7 @@
             <button class="tab" onclick="switchTab('collections')">Collections</button>
             <button class="tab" onclick="switchTab('upload')">Upload</button>
             <button class="tab" onclick="switchTab('ingest')">Folder Ingestion</button>
+            <button class="tab" onclick="switchTab('mcp')">Agent Config</button>
         </div>
 
         <!-- Dashboard Tab -->
@@ -664,9 +685,54 @@
             </div>
         </div>
 
+        <!-- Agent Configuration Tab -->
+        <div id="mcp" class="tab-content">
+            <div class="card">
+                <div class="card-title">Agent Configuration</div>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
+                    Copy the MCP client snippet and share the connectivity details with your own MCP-capable agent.
+                </p>
+                <div class="form-group">
+                    <label>Agent MCP snippet</label>
+                    <div class="code-block">
+                        <pre id="mcp-cli-snippet">&lt;agent-cli&gt; mcp add --transport stdio knowledge-kit npx -y @knowledge-kit/mcp-server</pre>
+                        <button class="secondary" onclick="copyMcpSnippet()">Copy</button>
+                    </div>
+                    <small style="color: var(--text-secondary);">Replace `<agent-cli>` with your agent’s CLI name (OpenClaw, Smithery, etc.).</small>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">MCP Server Settings</div>
+                <div id="mcp-config-alert"></div>
+                <div class="form-group">
+                    <label>Knowledge Base API URL</label>
+                    <input type="url" id="mcp-api-url" placeholder="http://localhost:8080">
+                </div>
+                <div class="form-group">
+                    <label>API Timeout (ms)</label>
+                    <input type="number" id="mcp-timeout" value="120000" min="5000">
+                </div>
+                <div class="form-group">
+                    <label>Log Level</label>
+                    <select id="mcp-log-level">
+                        <option value="DEBUG">DEBUG</option>
+                        <option value="INFO">INFO</option>
+                        <option value="WARN">WARN</option>
+                        <option value="ERROR">ERROR</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;">
+                    <button onclick="saveMcpConfig()">Save & Apply</button>
+                    <button class="secondary" onclick="testMcpConfig()">Test Connections</button>
+                </div>
+                <div id="mcp-test-results" style="margin-top: 16px;"></div>
+            </div>
+        </div>
+
         <footer>
             <p>Community Edition • <a href="/docs" target="_blank">API Documentation</a> • <a
-                    href="https://github.com/2dogsandanerd/ClawRag" target="_blank">GitHub</a>
+                    href="https://github.com/2dogsandanerd/Knowledge-Base-Self-Hosting-Kit" target="_blank">GitHub</a>
             </p>
         </footer>
     </div>
@@ -675,6 +741,9 @@
         const API_URL = '/api/v1/rag';
         let currentTaskId = null;
         let pollInterval = null;
+        const CONFIG_ENDPOINT = '/api/v1/config';
+        const CONFIG_TEST_ENDPOINT = '/api/v1/config/test';
+        const MCP_SNIPPET = '<agent-cli> mcp add --transport stdio knowledge-kit npx -y @knowledge-kit/mcp-server';
 
         // Switch tabs
         function switchTab(tabName) {
@@ -690,6 +759,7 @@
             }
             if (tabName === 'collections') loadCollections();
             if (tabName === 'query' || tabName === 'search' || tabName === 'upload') loadCollectionsList();
+            if (tabName === 'mcp') loadMcpConfig();
         }
 
         // Live Log Polling
@@ -1305,6 +1375,116 @@
                     statusEl.textContent = `⚠️ Connection error: ${error.message}`;
                 }
             }, 2000); // Poll every 2000ms (reduced from 500ms for efficiency)
+        }
+
+        async function loadMcpConfig() {
+            const alertId = 'mcp-config-alert';
+            const snippetEl = document.getElementById('mcp-cli-snippet');
+            if (snippetEl) snippetEl.textContent = MCP_SNIPPET;
+
+            try {
+                const res = await fetch(CONFIG_ENDPOINT);
+                if (!res.ok) throw new Error('Unable to load configuration');
+                const data = await res.json();
+                document.getElementById('mcp-api-url').value = data.KNOWLEDGE_BASE_API_URL || 'http://localhost:8080';
+                document.getElementById('mcp-timeout').value = data.KNOWLEDGE_BASE_TIMEOUT || '120000';
+                document.getElementById('mcp-log-level').value = data.LOG_LEVEL || 'INFO';
+            } catch (error) {
+                showAlert(alertId, 'Unable to load configuration: ' + error.message, 'error');
+            }
+        }
+
+        function buildMcpPayload() {
+            return {
+                KNOWLEDGE_BASE_API_URL: document.getElementById('mcp-api-url').value.trim() || 'http://localhost:8080',
+                KNOWLEDGE_BASE_TIMEOUT: document.getElementById('mcp-timeout').value.trim() || '120000',
+                LOG_LEVEL: document.getElementById('mcp-log-level').value || 'INFO'
+            };
+        }
+
+        async function saveMcpConfig() {
+            const alertId = 'mcp-config-alert';
+            const payload = buildMcpPayload();
+
+            try {
+                const res = await fetch(CONFIG_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Failed to save configuration');
+                showAlert(alertId, data.message || 'Configuration saved', 'success');
+                loadMcpConfig();
+            } catch (error) {
+                showAlert(alertId, 'Failed to save configuration: ' + error.message, 'error');
+            }
+        }
+
+        async function testMcpConfig() {
+            const alertId = 'mcp-config-alert';
+            const resultsEl = document.getElementById('mcp-test-results');
+            resultsEl.innerHTML = '<div class="card"><div class="spinner"></div> Testing connections...</div>';
+            const payload = buildMcpPayload();
+
+            try {
+                const res = await fetch(CONFIG_TEST_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Connection test failed');
+                renderMcpTestResults(data);
+                showAlert(alertId, 'Connection test completed', 'success');
+            } catch (error) {
+                resultsEl.innerHTML = '';
+                showAlert(alertId, 'Connection test failed: ' + error.message, 'error');
+            }
+        }
+
+        function renderMcpTestResults(results) {
+            const container = document.getElementById('mcp-test-results');
+            if (!container) return;
+
+            if (!Array.isArray(results) || results.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>No test results available</p></div>';
+                return;
+            }
+
+            container.innerHTML = results.map(result => `
+                <div class="result-item">
+                    <div class="result-content">
+                        <strong>${result.component}</strong> – ${result.success ? '✅' : '❌'} ${result.message}
+                    </div>
+                    <div class="result-meta">
+                        Duration: ${((result.duration || 0)).toFixed(2)}s
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyMcpSnippet() {
+            const alertId = 'mcp-config-alert';
+            const snippetEl = document.getElementById('mcp-cli-snippet');
+            const snippet = snippetEl?.textContent?.trim();
+
+            if (!snippet) {
+                showAlert(alertId, 'Snippet is not ready yet', 'error');
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(snippet).then(() => {
+                    showAlert(alertId, 'Snippet copied to clipboard', 'success');
+                }).catch(() => {
+                    showAlert(alertId, 'Clipboard access denied', 'error');
+                });
+            } else {
+                showAlert(alertId, 'Clipboard API not available', 'error');
+            }
         }
 
         // Utilities

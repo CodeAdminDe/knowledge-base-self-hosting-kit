@@ -4,14 +4,14 @@ startCommand:
     command: "npx"
     args:
       - "-y"
-      - "@clawrag/mcp-server"
+      - "@knowledge-kit/mcp-server"
   environmentVariables:
-    CLAWRAG_API_URL:
+    KNOWLEDGE_BASE_API_URL:
       type: string
-      description: "URL of the running ClawRAG backend (default: http://localhost:8080)"
+      description: "URL of the running Knowledge Base Self-Hosting Kit backend (default: http://localhost:8080)"
       required: false
       default: "http://localhost:8080"
-    CLAWRAG_TIMEOUT:
+    KNOWLEDGE_BASE_TIMEOUT:
       type: number
       description: "Timeout for API requests in milliseconds (default: 120000)"
       required: false

@@ -1,11 +1,11 @@
 {
-  "name": "@clawrag/mcp-server",
+  "name": "@knowledge-kit/mcp-server",
   "version": "1.1.0",
-  "description": "MCP server for ClawRAG integration",
+  "description": "MCP server for Knowledge Base Self-Hosting Kit integration",
   "main": "build/server.js",
   "type": "module",
   "bin": {
-    "clawrag-mcp": "build/cli.js"
+    "knowledge-kit-mcp": "build/cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -18,7 +18,7 @@
     "mcp",
     "rag",
     "openclaw",
-    "clawrag"
+    "knowledge-kit"
   ],
   "author": "2dogsandanerd",
   "license": "MIT",

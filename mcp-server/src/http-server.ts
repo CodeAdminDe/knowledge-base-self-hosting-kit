@@ -45,7 +45,7 @@ function formatRagResponse(data: QueryResponse): string {
 // Create MCP server instance
 function createMcpServer(): McpServer {
     const server = new McpServer({
-        name: 'clawrag',
+        name: 'knowledge-kit',
         version: '1.0.0',
     });
 
@@ -65,7 +65,7 @@ function createMcpServer(): McpServer {
             logger.info(`Querying: "${query}" in collections: ${collections?.length ? collections.join(', ') : 'ALL'}`);
 
             try {
-                const response = await fetch(`${config.CLAWRAG_API_URL}/api/v1/rag/query`, {
+                const response = await fetch(`${config.KNOWLEDGE_BASE_API_URL}/api/v1/rag/query`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -74,7 +74,7 @@ function createMcpServer(): McpServer {
                         k,
                         use_reranker
                     } as QueryRequest),
-                    signal: AbortSignal.timeout(config.CLAWRAG_TIMEOUT),
+                    signal: AbortSignal.timeout(config.KNOWLEDGE_BASE_TIMEOUT),
                 });
 
                 if (!response.ok) {
@@ -83,7 +83,7 @@ function createMcpServer(): McpServer {
                     return {
                         content: [{
                             type: 'text',
-                            text: `❌ ClawRAG API Error: ${response.status} ${response.statusText}`
+                            text: `❌ Knowledge Base Self-Hosting Kit API Error: ${response.status} ${response.statusText}`
                         }],
                         isError: true,
                     };
@@ -103,7 +103,7 @@ function createMcpServer(): McpServer {
                 return {
                     content: [{
                         type: 'text',
-                        text: `❌ Error connecting to ClawRAG: ${msg}`
+                        text: `❌ Error connecting to Knowledge Base Self-Hosting Kit: ${msg}`
                     }],
                     isError: true,
                 };
@@ -119,8 +119,8 @@ function createMcpServer(): McpServer {
             logger.info('Listing collections');
 
             try {
-                const response = await fetch(`${config.CLAWRAG_API_URL}/api/v1/rag/collections`, {
-                    signal: AbortSignal.timeout(config.CLAWRAG_TIMEOUT),
+                const response = await fetch(`${config.KNOWLEDGE_BASE_API_URL}/api/v1/rag/collections`, {
+                    signal: AbortSignal.timeout(config.KNOWLEDGE_BASE_TIMEOUT),
                 });
 
                 if (!response.ok) {
@@ -139,7 +139,7 @@ function createMcpServer(): McpServer {
                     return {
                         content: [{
                             type: 'text',
-                            text: 'No collections found in ClawRAG.'
+                            text: 'No collections found in Knowledge Base Self-Hosting Kit.'
                         }]
                     };
                 }
@@ -159,7 +159,7 @@ function createMcpServer(): McpServer {
                 return {
                     content: [{
                         type: 'text',
-                        text: `❌ Error connecting to ClawRAG: ${error.message}`
+                        text: `❌ Error connecting to Knowledge Base Self-Hosting Kit: ${error.message}`
                     }],
                     isError: true,
                 };
@@ -211,7 +211,7 @@ const httpServer = createServer(async (req, res) => {
 });
 
 httpServer.listen(PORT, () => {
-    logger.info(`ClawRAG MCP HTTP Server running on port ${PORT}`);
+    logger.info(`Knowledge Base Self-Hosting Kit MCP HTTP Server running on port ${PORT}`);
     logger.info(`Server card available at: http://localhost:${PORT}/.well-known/mcp/server-card.json`);
     logger.info(`MCP SSE endpoint at: http://localhost:${PORT}/sse`);
 });

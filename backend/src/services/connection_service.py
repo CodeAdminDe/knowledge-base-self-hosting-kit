@@ -69,23 +69,60 @@ class ConnectionService:
             self.logger.error(f"ChromaDB connection test failed: {e}")
             return {"success": False, "message": str(e), "duration": duration}
 
+    async def test_knowledge_base_api(self, config: Dict[str, Any]) -> Dict[str, Any]:
+        """Tests connection to Knowledge Base API."""
+        start_time = time.time()
+        
+        api_url = config.get("KNOWLEDGE_BASE_API_URL", "http://localhost:8080")
+        timeout_ms = config.get("KNOWLEDGE_BASE_TIMEOUT", "120000")
+        timeout_sec = int(timeout_ms) / 1000
+        
+        try:
+            # Ensure the URL ends with /health for the health check
+            health_url = api_url.rstrip('/') + '/health'
+            
+            async with httpx.AsyncClient(timeout=timeout_sec) as client:
+                response = await client.get(health_url)
+                
+                if response.status_code == 200:
+                    duration = time.time() - start_time
+                    data = response.json()
+                    message = f"Knowledge Base API connection successful. Status: {data.get('status', 'unknown')}"
+                    return {
+                        "success": True,
+                        "message": message,
+                        "duration": duration
+                    }
+                else:
+                    duration = time.time() - start_time
+                    return {
+                        "success": False,
+                        "message": f"Knowledge Base API responded with status {response.status_code}",
+                        "duration": duration
+                    }
+        except Exception as e:
+            duration = time.time() - start_time
+            self.logger.error(f"Knowledge Base API connection test failed: {e}")
+            return {"success": False, "message": f"Knowledge Base API connection failed: {str(e)}", "duration": duration}
+
     async def test_all_connections(self, config: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Tests all relevant connections concurrently."""
         self.logger.info("Testing all connections...")
         tasks = {
             "ollama": self.test_ollama_connection(config),
             "chroma": self.test_chroma_connection(config),
+            "knowledge_base_api": self.test_knowledge_base_api(config),
             # Add other tests like email here in the future
         }
 
         results = await asyncio.gather(*tasks.values())
-        
+
         final_results = []
         for i, (component, _) in enumerate(tasks.items()):
             result = results[i]
             result["component"] = component
             final_results.append(result)
-        
+
         return final_results
 
 connection_service = ConnectionService()

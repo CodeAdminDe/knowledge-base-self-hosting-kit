@@ -15,7 +15,7 @@ from loguru import logger
 import os
 
 
-def setup_tracing(service_name: str = "moltbot_rag") -> trace.Tracer:
+def setup_tracing(service_name: str = "knowledge_base_self_hosting_kit") -> trace.Tracer:
     """
     Initialize OpenTelemetry tracing.
     

@@ -1,6 +1,6 @@
 # Customization Guide
 
-This guide explains the main customization options for ClawRAG.
+This guide explains the main customization options for Knowledge Base Self-Hosting Kit.
 
 ## Temperature and Model Parameters
 

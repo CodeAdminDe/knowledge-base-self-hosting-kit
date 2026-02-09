@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 const configSchema = z.object({
-    CLAWRAG_API_URL: z.string().url().default('http://localhost:8080'),
-    CLAWRAG_TIMEOUT: z.string().default('120000').transform(Number),
+    KNOWLEDGE_BASE_API_URL: z.string().url().default('http://localhost:8080'),
+    KNOWLEDGE_BASE_TIMEOUT: z.string().default('120000').transform(Number),
     LOG_LEVEL: z.enum(['DEBUG', 'INFO', 'WARN', 'ERROR']).default('INFO'),
 });
 
 const env = {
-    CLAWRAG_API_URL: process.env.CLAWRAG_API_URL,
-    CLAWRAG_TIMEOUT: process.env.CLAWRAG_TIMEOUT,
+    KNOWLEDGE_BASE_API_URL: process.env.KNOWLEDGE_BASE_API_URL,
+    KNOWLEDGE_BASE_TIMEOUT: process.env.KNOWLEDGE_BASE_TIMEOUT,
     LOG_LEVEL: process.env.LOG_LEVEL,
 };
 

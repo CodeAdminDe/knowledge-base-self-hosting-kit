@@ -1,4 +1,4 @@
-# ClawRAG Version 1.2 - Critical Bug Fix Release
+# Knowledge Base Self-Hosting Kit Version 1.2 - Critical Bug Fix Release
 
 ## 🐛 Critical Bug Fixes
 

@@ -1,4 +1,4 @@
-# Smithery-Veröffentlichung für ClawRAG - Detaillierter Plan
+# Smithery-Veröffentlichung für Knowledge Base Self-Hosting Kit - Detaillierter Plan
 
 ## Phase 1: Vorbereitung (Vor der Veröffentlichung)
 
@@ -21,7 +21,7 @@
 
 ### 2.1 Lokaler Test
 - [ ] Teste MCP-Server unabhängig vom Backend
-- [ ] Teste Verbindung mit laufendem ClawRAG Backend
+- [ ] Teste Verbindung mit laufendem Knowledge Base Self-Hosting Kit Backend
 - [ ] Teste Fehlerfälle (Backend nicht erreichbar)
 
 ### 2.2 Smithery-Kompatibilität
@@ -31,7 +31,7 @@
 ## Phase 3: Veröffentlichung
 
 ### 3.1 NPM-Publikation
-- [ ] Stelle sicher, dass @clawrag/mcp-server auf NPM veröffentlicht ist (aktuell: 1.0.0)
+- [ ] Stelle sicher, dass @knowledge-kit/mcp-server auf NPM veröffentlicht ist (aktuell: 1.0.0)
 - [ ] Überprüfe Zugriffsberechtigungen für das Paket
 - [ ] Stelle sicher, dass das Paket öffentlich sichtbar ist
 
@@ -61,19 +61,19 @@
 Aktuelle Situation:
 - MCP-Server ist bereits implementiert und funktioniert
 - Package.json ist korrekt konfiguriert mit:
-  - Name: @clawrag/mcp-server
-  - Bin-Eintrag: clawrag-mcp -> ./build/server.js
+  - Name: @knowledge-kit/mcp-server
+  - Bin-Eintrag: knowledge-kit-mcp -> ./build/server.js
   - Abhängigkeiten korrekt definiert
-- Konfiguration erfolgt über Umgebungsvariablen (CLAWRAG_API_URL, CLAWRAG_TIMEOUT, LOG_LEVEL)
+- Konfiguration erfolgt über Umgebungsvariablen (KNOWLEDGE_BASE_API_URL, KNOWLEDGE_BASE_TIMEOUT, LOG_LEVEL)
 
 Zu ergänzen:
 - Bessere Fehlermeldung wenn Backend nicht erreichbar ist
-- Hinweis in der Ausgabe dass ClawRAG Backend gestartet sein muss
+- Hinweis in der Ausgabe dass Knowledge Base Self-Hosting Kit Backend gestartet sein muss
 
 #### 1.2 Smithery-Konfiguration
 
 Die smithery.yaml wurde erstellt mit:
-- Startbefehl: npx -y @clawrag/mcp-server
+- Startbefehl: npx -y @knowledge-kit/mcp-server
 - Unterstützt stdio-Transport (korrekt für MCP)
 - Definiert Umgebungsvariablen mit Beschreibungen und Standardwerten
 
@@ -81,7 +81,7 @@ Die smithery.yaml wurde erstellt mit:
 
 Aktualisiere mcp-server/README.md mit:
 - Smithery-spezifischen Installationsanweisungen
-- Klarem Hinweis dass ClawRAG Backend separat laufen muss
+- Klarem Hinweis dass Knowledge Base Self-Hosting Kit Backend separat laufen muss
 - Häufige Fehler und Lösungen
 
 ### Phase 2: Test & Validierung
@@ -94,7 +94,7 @@ Teste folgende Szenarien:
 
 ### Phase 3: Veröffentlichung
 
-Da das Paket @clawrag/mcp-server bereits in der package.json vorhanden ist, ist es wahrscheinlich bereits auf NPM veröffentlicht. Falls nicht, müssen folgende Schritte durchgeführt werden:
+Da das Paket @knowledge-kit/mcp-server bereits in der package.json vorhanden ist, ist es wahrscheinlich bereits auf NPM veröffentlicht. Falls nicht, müssen folgende Schritte durchgeführt werden:
 - npm login (mit entsprechenden Berechtigungen)
 - cd mcp-server && npm publish --access public
 

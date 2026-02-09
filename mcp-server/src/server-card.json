@@ -1,11 +1,11 @@
 {
-  "name": "clawrag",
+  "name": "knowledge-kit",
   "version": "1.0.0",
-  "description": "Official MCP connector for ClawRAG - The self-hosted, Docling-powered knowledge base",
+  "description": "Official MCP connector for Knowledge Base Self-Hosting Kit - The self-hosted, Docling-powered knowledge base",
   "capabilities": {
     "tools": {
       "query_knowledge": {
-        "description": "Query the ClawRAG knowledge base with semantic search",
+        "description": "Query the Knowledge Base Self-Hosting Kit knowledge base with semantic search",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -35,7 +35,7 @@
         }
       },
       "list_collections": {
-        "description": "List all available document collections in ClawRAG",
+        "description": "List all available document collections in Knowledge Base Self-Hosting Kit",
         "inputSchema": {
           "type": "object",
           "properties": {}
@@ -44,5 +44,5 @@
     }
   },
   "vendor": "2dogsandanerd",
-  "sourceUrl": "https://github.com/2dogsandanerd/ClawRag"
+  "sourceUrl": "https://github.com/2dogsandanerd/Knowledge-Base-Self-Hosting-Kit"
 }

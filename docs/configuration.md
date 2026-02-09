@@ -1,6 +1,6 @@
 # Configuration Guide
 
-This document explains the main configuration options available in ClawRAG.
+This document explains the main configuration options available in Knowledge Base Self-Hosting Kit.
 
 ## Environment Variables
 

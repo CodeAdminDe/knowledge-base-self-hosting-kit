@@ -1,16 +1,16 @@
-# MCP-basierte Ingestion für ClawRAG
+# MCP-basierte Ingestion für Knowledge Base Self-Hosting Kit
 
 ## Übersicht
 
-Derzeit unterstützt der MCP-Server **keine direkte Ingestion** von Dokumenten über OpenClaw. Die Ingestion erfolgt über die ClawRAG-REST-API, die über die Web-Oberfläche oder direkte API-Aufrufe genutzt werden kann.
+Derzeit unterstützt der MCP-Server **keine direkte Ingestion** von Dokumenten über OpenClaw. Die Ingestion erfolgt über die Knowledge Base Self-Hosting Kit-REST-API, die über die Web-Oberfläche oder direkte API-Aufrufe genutzt werden kann.
 
 ## Aktuelle Architektur
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   OpenClaw      │    │   MCP Server    │    │   ClawRAG       │
+│   OpenClaw      │    │   MCP Server    │    │   Knowledge Base Self-Hosting Kit       │
 │   (WhatsApp/    │◄──►│   (stdio)       │◄──►│   (REST API)    │
-│   Telegram)     │    │   @clawrag/     │    │                 │
+│   Telegram)     │    │   @knowledge-kit/     │    │                 │
 │                 │    │   mcp-server    │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                                                     │
@@ -119,7 +119,7 @@ create_collection(
 
 1. **Setup**:
    ```bash
-   # ClawRAG starten
+   # Knowledge Base Self-Hosting Kit starten
    docker compose up -d
    
    # Dokumente einfügen
@@ -131,7 +131,7 @@ create_collection(
 2. **Nutzung über OpenClaw**:
    ```bash
    # MCP-Server installieren
-   openclaw mcp add --transport stdio clawrag npx -y @clawrag/mcp-server
+   openclaw mcp add --transport stdio knowledge-kit npx -y @knowledge-kit/mcp-server
    
    # Abfrage über WhatsApp/Telegram
    "Suche im Wissensspeicher nach: Vertragsklausel"

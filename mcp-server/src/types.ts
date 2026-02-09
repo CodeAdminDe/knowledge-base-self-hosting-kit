@@ -1,5 +1,5 @@
 /**
- * API Response patterns from ClawRAG
+ * API Response patterns from Knowledge Base Self-Hosting Kit
  */
 
 export interface Source {

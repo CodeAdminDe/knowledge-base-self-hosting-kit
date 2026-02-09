@@ -2,7 +2,7 @@ services:
   # ChromaDB Vector Database
   chromadb:
     image: chromadb/chroma:0.5.23
-    container_name: clawrag-chromadb
+    container_name: knowledge-kit-chromadb
     expose:
       - "8000"
     volumes:
@@ -24,7 +24,7 @@ services:
   # Comment this out and use OPTION 2 if you want isolated container
   ollama:
     image: ollama/ollama:latest
-    container_name: clawrag-ollama
+    container_name: knowledge-kit-ollama
     expose:
       - "11434"
     volumes:
@@ -42,7 +42,7 @@ services:
   # OPTION 2: Isolated Ollama with dedicated volume (uncomment to use)
   # ollama:
   #   image: ollama/ollama:latest
-  #   container_name: clawrag-ollama
+  #   container_name: knowledge-kit-ollama
   #   expose:
   #     - "11434"
   #   volumes:
@@ -60,7 +60,7 @@ services:
   # nginx Gateway - Single entry point for all traffic
   gateway:
     image: nginx:alpine
-    container_name: clawrag-gateway
+    container_name: knowledge-kit-gateway
     ports:
       - "${PORT:-8080}:80"
     volumes:
@@ -78,7 +78,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: clawrag-backend
+    container_name: knowledge-kit-backend
     expose:
       - "8080"
     environment:
